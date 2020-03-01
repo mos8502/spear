@@ -9,7 +9,7 @@ dependencies {
 
     implementation "commons-io:commons-io:2.6"
     implementation "org.ow2.asm:asm:7.1"
-    implementation "org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.1.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-metadata-jvm:$kotlin_metadata_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 
