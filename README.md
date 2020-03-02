@@ -105,4 +105,8 @@ class MyTest {
 
 You can use your mocking library of choice to mock the module (the example above I have used [Mockito-Kotlin](https://github.com/nhaarman/mockito-kotlin))
 
-For more details check out the [sample](sample/)
+For more details check out the [sample](sample/).
+In order to run the sample first you need to publish all artifacts to maven local by issuing the following command
+```
+./gradlew publishToMavenLocal 
+```
