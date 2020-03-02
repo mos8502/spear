@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="error_message">Failed to load quote</string>
+    <string name="load_quote">Load quote</string>
+</resources>

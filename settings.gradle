@@ -1,3 +1,4 @@
 include ':plugin'
 include ':processor'
 include ':adapter'
+include ':sample'
