@@ -37,7 +37,6 @@ class MainActivityTest {
     @Mock
     lateinit var repository: QuoteOfTheDayRepository
 
-
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
