@@ -11,9 +11,9 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import hu.nemi.spear.sample.android.data.DataModule
+import hu.nemi.spear.sample.android.data.*
 import hu.nemi.spear.sample.android.data.DataModuleAdapter.replaceWith
-import hu.nemi.spear.sample.android.data.QuoteOfTheDayRepository
+import hu.nemi.spear.sample.android.data.DataModuleAdapter.reset
 import hu.nemi.spear.sample.android.ui.MainActivity
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -40,31 +40,42 @@ class MainActivityTest {
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
-        DataModule replaceWith mock(defaultAnswer = CallsRealMethods())
-        doReturn(repository).whenever(DataModule).provideRepository(any())
     }
 
     @Test
     fun showsQuote() {
-        runBlocking {
-            whenever(repository.quote(any())).thenReturn("Hello, World!")
+        DataModule replaceWith mock(defaultAnswer = CallsRealMethods())
+        doReturn(repository).whenever(DataModule).provideRepository(any())
+        try {
+            runBlocking {
+                whenever(repository.quote(any())).thenReturn("Hello, World!")
+            }
+
+            activityTestRule.launchActivity(null)
+
+            onView(withId(R.id.quote)).check(matches(withText("Hello, World!")))
+        } finally {
+            DataModule.reset()
         }
-
-        activityTestRule.launchActivity(null)
-
-        onView(withId(R.id.quote)).check(matches(withText("Hello, World!")))
     }
 
     @Test
     fun loadQuote() {
-        runBlocking {
-            whenever(repository.quote(any())).thenReturn("Hello, World!")
-                .thenReturn("Hello, World ... again!")
+        QuoteOfTheDayRepositoryAdapter.shadow = repository
+        try {
+            runBlocking {
+                whenever(repository.quote(any())).thenReturn("Hello, World!")
+                    .thenReturn("Hello, World ... again!")
+            }
+
+            activityTestRule.launchActivity(null)
+
+            onView(withId(R.id.loadQuote)).perform(click())
+            onView(withId(R.id.quote)).check(matches(withText("Hello, World ... again!")))
+        } finally {
+
+            QuoteOfTheDayRepositoryAdapter.shadow = null
         }
 
-        activityTestRule.launchActivity(null)
-
-        onView(withId(R.id.loadQuote)).perform(click())
-        onView(withId(R.id.quote)).check(matches(withText("Hello, World ... again!")))
     }
 }

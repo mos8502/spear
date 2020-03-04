@@ -36,13 +36,13 @@ class Processor : AbstractProcessor() {
         round.getElementsAnnotatedWith(Generated::class.java)
             ?.asSequence()
             ?.mapNotNull { it.asType().accept(GetFactory, environment) }
-            ?.forEach(::buildDoppelganger)
+            ?.forEach(::buildDependencyAdapter)
 
         return false
     }
 
-    private fun buildDoppelganger(descriptor: FactoryDescriptor) {
-        val factory = environment.typeUtils.asElement(descriptor.creates) as TypeElement
+    private fun buildDependencyAdapter(descriptor: FactoryDescriptor) {
+        val factory = environment.typeUtils.asElement(descriptor.factory) as TypeElement
         val creates = environment.typeUtils.asElement(descriptor.creates) as TypeElement
 
         val adapterName = "${creates.simpleName}Adapter"
@@ -50,6 +50,7 @@ class Processor : AbstractProcessor() {
 
         val superClass = ClassName.bestGuess("hu.nemi.spear.adapter.DependencyAdapter")
             .parameterizedBy(creates.asClassName())
+
         val adapterSpec = FileSpec.builder(packageName, adapterName)
             .addType(
                 TypeSpec.objectBuilder(adapterName)

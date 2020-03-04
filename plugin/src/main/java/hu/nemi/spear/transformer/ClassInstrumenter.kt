@@ -1,6 +1,7 @@
 package hu.nemi.spear.transformer
 
 import hu.nemi.spear.transformer.extractor.ClassInfoExtractor
+import hu.nemi.spear.transformer.transformers.FactoryTransformer
 import hu.nemi.spear.transformer.transformers.ModuleAdapterTransformer
 import hu.nemi.spear.transformer.transformers.ModuleTrasnformer
 import org.objectweb.asm.ClassReader
@@ -33,6 +34,12 @@ class ClassInstrumenter(private val runtimeClasspath: List<URL>) {
                         classWriter,
                         requireNotNull(moduleName)
                     ), ClassReader.SKIP_FRAMES
+                )
+                classWriter.toByteArray()
+            } else if (isFactory) {
+                classReader.accept(
+                    FactoryTransformer(classWriter, requireNotNull(creates)),
+                    ClassReader.SKIP_FRAMES
                 )
                 classWriter.toByteArray()
             } else {
